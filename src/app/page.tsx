@@ -102,10 +102,6 @@ export default function Home() {
         return processedRow;
       });
 
-      // Add key answers row at the end
-      const keyAnswersRow = ['Key Answers', '', ...headerRow.slice(2, -2).map((val: string | number | null) => String(val)), '', ''];
-      processedData.push(keyAnswersRow);
-
       // Create new workbook
       const newWorkbook = XLSX.utils.book_new();
       const newWorksheet = XLSX.utils.aoa_to_sheet(processedData);
@@ -160,42 +156,58 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Excel Mapper
         </h1>
         
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Input File
-            </label>
-            <div className="flex items-center space-x-4">
-              <input
-                type="file"
-                accept=".xlsx"
-                onChange={handleFileChange}
-                className="block w-full text-sm text-gray-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-blue-50 file:text-blue-700
-                  hover:file:bg-blue-100"
-              />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Column - Instructions */}
+          <div className="bg-blue-50 p-6 rounded-md">
+            <h2 className="text-lg font-semibold text-blue-800 mb-4">Cara Penggunaan:</h2>
+            <ol className="list-decimal list-inside space-y-3 text-blue-700">
+              <li>Download Jawaban dari google form</li>
+              <li>Delete Kolom sisakan hanya Nama Lengkap (Kolom 1), Kelas (Kolom 2), dan sisanya kolom Jawaban</li>
+              <li>Dibagian kolom jawaban ganti pertanyaan dengan teks kunci jawaban (Bukan Optionnya)</li>
+              <li>Upload excel dan Proses</li>
+            </ol>
           </div>
 
-          <button
-            onClick={handleProcess}
-            disabled={!inputFile || processing}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium
-              ${!inputFile || processing
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
-              }`}
-          >
-            {processing ? 'Processing...' : 'Process'}
-          </button>
+          {/* Right Column - File Input */}
+          <div className="flex flex-col justify-center">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Input File
+                </label>
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="file"
+                    accept=".xlsx"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-blue-50 file:text-blue-700
+                      hover:file:bg-blue-100"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleProcess}
+                disabled={!inputFile || processing}
+                className={`w-full py-2 px-4 rounded-md text-white font-medium
+                  ${!inputFile || processing
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
+              >
+                {processing ? 'Processing...' : 'Process'}
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-500">
