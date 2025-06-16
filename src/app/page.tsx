@@ -66,6 +66,13 @@ export default function Home() {
         headerRow[colIndex] = columnMappings[colIndex][keyValue];
       }
 
+      // Add combined header text
+      const combinedHeader = headerRow.slice(2)
+        .filter((val: string | number | null): val is string => typeof val === 'string')
+        .join('');
+      headerRow.push(combinedHeader);
+      headerRow.push('NILAI');
+
       // Second pass: Process the data rows
       const processedData = jsonData.map((row: (string | number | null)[], rowIndex: number) => {
         if (rowIndex === 0) {
@@ -94,6 +101,10 @@ export default function Home() {
 
         return processedRow;
       });
+
+      // Add key answers row at the end
+      const keyAnswersRow = ['Key Answers', '', ...headerRow.slice(2, -2).map((val: string | number | null) => String(val)), '', ''];
+      processedData.push(keyAnswersRow);
 
       // Create new workbook
       const newWorkbook = XLSX.utils.book_new();
