@@ -8,7 +8,7 @@ export default function Home() {
   const [inputFile, setInputFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
 
-  const createDynamicMapping = (values: any[], keyValue?: string) => {
+  const createDynamicMapping = (values: (string | number | null | undefined)[], keyValue?: string) => {
     const allLetters = ['A', 'B', 'C', 'D', 'E'];
     const uniqueValues = [...new Set(values.filter(v => v !== null && v !== undefined))];
     
@@ -32,7 +32,7 @@ export default function Home() {
     }, {} as { [key: string]: string });
   };
 
-  const getColumnWidth = (data: any[][], columnIndex: number): number => {
+  const getColumnWidth = (data: (string | number | null)[][], columnIndex: number): number => {
     // Get all values in the column
     const values = data.map(row => String(row[columnIndex] || ''));
     // Find the longest value
@@ -47,7 +47,7 @@ export default function Home() {
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data);
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as (string | number | null)[][];
 
       // First pass: Create mappings for each column
       const columnMappings: { [key: number]: { [key: string]: string } } = {};
@@ -55,7 +55,7 @@ export default function Home() {
       
       for (let colIndex = 2; colIndex < firstRow.length; colIndex++) {
         const keyValue = String(firstRow[colIndex]);
-        const colValues = jsonData.slice(1).map((r: any[]) => r[colIndex]);
+        const colValues = jsonData.slice(1).map((r: (string | number | null)[]) => r[colIndex]);
         columnMappings[colIndex] = createDynamicMapping(colValues, keyValue);
       }
 
@@ -67,7 +67,7 @@ export default function Home() {
       }
 
       // Second pass: Process the data rows
-      const processedData = jsonData.map((row: any[], rowIndex: number) => {
+      const processedData = jsonData.map((row: (string | number | null)[], rowIndex: number) => {
         if (rowIndex === 0) {
           return headerRow;
         }
@@ -82,7 +82,7 @@ export default function Home() {
 
         // Add combined column
         const combined = processedRow.slice(2)
-          .filter((val: string) => ['A', 'B', 'C', 'D', 'E'].includes(val))
+          .filter((val: string | number | null): val is string => typeof val === 'string' && ['A', 'B', 'C', 'D', 'E'].includes(val))
           .join('');
         processedRow.push(combined);
 
